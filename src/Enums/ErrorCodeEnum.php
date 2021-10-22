@@ -6,28 +6,28 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
-namespace App\Enums\AccessBank;
+namespace BrokeYourBike\AccessBank\Enums;
 
 /**
  * @author Ivan Stasiuk <brokeyourbike@gmail.com>
  *
- * @method static ErrorCode NO_ERROR()
- * @method static ErrorCode UNAUTHORIZED()
- * @method static ErrorCode DUPLICATE_REQUEST()
- * @method static ErrorCode NO_RECORD()
- * @method static ErrorCode INVALID_DEBIT_ACCOUNT()
- * @method static ErrorCode RECONFIRM_BENEFICIARY_ACCOUNT()
- * @method static ErrorCode UNABLE_TO_PROCESS_REQUEST()
- * @method static ErrorCode BENEFICIARY_ACCOUNT_NO_PERMITTED()
- * @method static ErrorCode INSUFFICIENT_FUNDS()
- * @method static ErrorCode INVALID_ACCOUNT_NUMBER()
- * @method static ErrorCode UNABLE_TO_PROCESS_ON_NIBSS()
- * @method static ErrorCode UNABLE_TO_DEBIT()
- * @method static ErrorCode INVALID_CREDIT_ACCOUNT()
- * @method static ErrorCode NOT_PERMITTED()
+ * @method static ErrorCodeEnum NO_ERROR()
+ * @method static ErrorCodeEnum UNAUTHORIZED()
+ * @method static ErrorCodeEnum DUPLICATE_REQUEST()
+ * @method static ErrorCodeEnum NO_RECORD()
+ * @method static ErrorCodeEnum INVALID_DEBIT_ACCOUNT()
+ * @method static ErrorCodeEnum RECONFIRM_BENEFICIARY_ACCOUNT()
+ * @method static ErrorCodeEnum UNABLE_TO_PROCESS_REQUEST()
+ * @method static ErrorCodeEnum BENEFICIARY_ACCOUNT_NO_PERMITTED()
+ * @method static ErrorCodeEnum INSUFFICIENT_FUNDS()
+ * @method static ErrorCodeEnum INVALID_ACCOUNT_NUMBER()
+ * @method static ErrorCodeEnum UNABLE_TO_PROCESS_ON_NIBSS()
+ * @method static ErrorCodeEnum UNABLE_TO_DEBIT()
+ * @method static ErrorCodeEnum INVALID_CREDIT_ACCOUNT()
+ * @method static ErrorCodeEnum NOT_PERMITTED()
  * @psalm-immutable
  */
-final class ErrorCode extends \MyCLabs\Enum\Enum
+final class ErrorCodeEnum extends \MyCLabs\Enum\Enum
 {
     /**
      * No error.

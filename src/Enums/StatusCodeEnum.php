@@ -6,19 +6,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
-namespace App\Enums\AccessBank;
+namespace BrokeYourBike\AccessBank\Enums;
 
 /**
  * @author Ivan Stasiuk <brokeyourbike@gmail.com>
  *
- * @method static StatusCode PENDING()
- * @method static StatusCode SUCCESS()
- * @method static StatusCode PROCESSING()
- * @method static StatusCode FAILED()
- * @method static StatusCode UNKNOWN()
+ * @method static StatusCodeEnum PENDING()
+ * @method static StatusCodeEnum SUCCESS()
+ * @method static StatusCodeEnum PROCESSING()
+ * @method static StatusCodeEnum FAILED()
+ * @method static StatusCodeEnum UNKNOWN()
  * @psalm-immutable
  */
-final class StatusCode extends \MyCLabs\Enum\Enum
+final class StatusCodeEnum extends \MyCLabs\Enum\Enum
 {
     /**
      * Transaction queued for processing.

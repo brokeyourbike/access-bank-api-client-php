@@ -31,6 +31,7 @@ class Client implements HttpClientInterface
 
     private ConfigInterface $config;
     private CacheInterface $cache;
+    private int $ttlMarginInSeconds = 60;
 
     public function __construct(ConfigInterface $config, ClientInterface $httpClient, CacheInterface $cache)
     {
@@ -63,7 +64,7 @@ class Client implements HttpClientInterface
             $this->cache->set(
                 $this->authTokenCacheKey(),
                 $responseJson['access_token'],
-                (int) $responseJson['expires_in']
+                (int) $responseJson['expires_in'] - $this->ttlMarginInSeconds
             );
 
             return $responseJson['access_token'];
@@ -133,7 +134,7 @@ class Client implements HttpClientInterface
             'beneficiaryName' => $bankTransaction->getRecipientName(),
             'amount' => $bankTransaction->getAmount(),
             'currency' => $bankTransaction->getCurrencyCode(),
-            'narration' => $bankTransaction->getDescription() ?? 'transaction',
+            'narration' => $bankTransaction->getDescription(),
             'auditId' => $bankTransaction->getReference(),
             'appId' => $this->config->getAppId(),
         ]);
