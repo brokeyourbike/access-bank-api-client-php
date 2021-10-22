@@ -6,15 +6,20 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
-namespace BrokeYourBike\LaravelPackageTemplate;
+namespace BrokeYourBike\AccessBank;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Ivan Stasiuk <brokeyourbike@gmail.com>
  */
-class ReplaceMe
+class ClientTest extends TestCase
 {
-    public function ping(): string
+    /** @test */
+    public function it_will_pong()
     {
-        return 'pong';
+        $replaceMe = new Client();
+
+        $this->assertSame('pong', $replaceMe->ping());
     }
 }
