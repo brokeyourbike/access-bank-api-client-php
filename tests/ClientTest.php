@@ -20,6 +20,6 @@ class ClientTest extends TestCase
     {
         $replaceMe = new Client();
 
-        $this->assertSame('pong', $replaceMe->ping());
+        $this->assertSame('pong!', $replaceMe->ping());
     }
 }
