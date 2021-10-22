@@ -15,6 +15,6 @@ class Client
 {
     public function ping(): string
     {
-        return 'pong!';
+        return 'pong';
     }
 }
