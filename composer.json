@@ -1,5 +1,5 @@
 {
-    "name": "brokeyourbike/access-bank-api-client-php",
+    "name": "brokeyourbike/access-bank-api-client",
     "description": "Access Bank API Client for PHP",
     "type": "library",
     "license": "MPL-2.0",
