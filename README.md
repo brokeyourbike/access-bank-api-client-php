@@ -8,7 +8,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/67384c57dff9b7f47aa2/test_coverage)](https://codeclimate.com/github/brokeyourbike/access-bank-api-client-php/test_coverage)
 [![tests](https://github.com/brokeyourbike/access-bank-api-client-php/actions/workflows/tests.yml/badge.svg)](https://github.com/brokeyourbike/access-bank-api-client-php/actions/workflows/tests.yml)
 
-Template for Laravel packages
+Access Bank API Client for PHP
 
 ## Installation
 
