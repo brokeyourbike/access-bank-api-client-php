@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.1.0...v1.0.0) (2021-12-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove `isLive`
+
+### Bug Fixes
+
+* remove `isLive` ([95a2829](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/95a2829a4a5d79ab3dfaf376af0cd249e547b861))
+
 ## [0.1.0](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.0.2...v0.1.0) (2021-10-22)
 
 
