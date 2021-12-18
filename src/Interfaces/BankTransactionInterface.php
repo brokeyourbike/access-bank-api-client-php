@@ -16,6 +16,7 @@ interface BankTransactionInterface
     public function getReference(): string;
     public function getAmount(): float;
     public function getCurrencyCode(): string;
+    public function getBankCode(): string;
     public function getDebitAccount(): string;
     public function getRecipientAccount(): string;
     public function getRecipientName(): string;

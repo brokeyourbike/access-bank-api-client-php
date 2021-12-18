@@ -18,14 +18,10 @@ use BrokeYourBike\AccessBank\Client;
  */
 class FetchAuthTokenRawTest extends TestCase
 {
-    /**
-     * @test
-     * @dataProvider isLiveProvider
-     */
-    public function it_can_prepare_request(bool $isLive): void
+    /** @test */
+    public function it_can_prepare_request(): void
     {
         $mockedConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
-        $mockedConfig->method('isLive')->willReturn($isLive);
         $mockedConfig->method('getAuthUrl')->willReturn('https://auth.example/');
         $mockedConfig->method('getClientId')->willReturn('client-id');
         $mockedConfig->method('getClientSecret')->willReturn('super-secret-value');

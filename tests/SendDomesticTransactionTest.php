@@ -23,17 +23,13 @@ class SendDomesticTransactionTest extends TestCase
     private string $clientSecret = 'secure-token';
     private string $subscriptionKey = 'subscription-key';
 
-    /**
-     * @test
-     * @dataProvider isLiveProvider
-     */
-    public function it_can_prepare_request(bool $isLive): void
+    /** @test */
+    public function it_can_prepare_request(): void
     {
         /** @var BankTransactionInterface $transaction */
         $transaction = $this->getMockBuilder(BankTransactionInterface::class)->getMock();
 
         $mockedConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
-        $mockedConfig->method('isLive')->willReturn($isLive);
         $mockedConfig->method('getUrl')->willReturn('https://api.example/');
         $mockedConfig->method('getAppId')->willReturn($this->appId);
         $mockedConfig->method('getClientSecret')->willReturn($this->clientSecret);
@@ -94,11 +90,8 @@ class SendDomesticTransactionTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $requestResult);
     }
 
-    /**
-     * @test
-     * @dataProvider isLiveProvider
-     */
-    public function it_will_pass_source_model_as_option(bool $isLive): void
+    /** @test */
+    public function it_will_pass_source_model_as_option(): void
     {
         /** @var SourceBankTransactionFixture $transaction */
         $transaction = $this->getMockBuilder(SourceBankTransactionFixture::class)->getMock();
@@ -107,7 +100,6 @@ class SendDomesticTransactionTest extends TestCase
         $this->assertInstanceOf(SourceBankTransactionFixture::class, $transaction);
 
         $mockedConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
-        $mockedConfig->method('isLive')->willReturn($isLive);
         $mockedConfig->method('getUrl')->willReturn('https://api.example/');
         $mockedConfig->method('getAppId')->willReturn($this->appId);
         $mockedConfig->method('getClientSecret')->willReturn($this->clientSecret);

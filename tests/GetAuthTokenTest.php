@@ -20,11 +20,8 @@ class GetAuthTokenTest extends TestCase
 {
     private string $tokenValue = 'super-secure-token';
 
-    /**
-     * @test
-     * @dataProvider isLiveProvider
-     */
-    public function it_can_cache_and_return_auth_token(bool $isLive)
+    /** @test */
+    public function it_can_cache_and_return_auth_token()
     {
         $mockedConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
 
@@ -93,10 +90,7 @@ class GetAuthTokenTest extends TestCase
         $this->assertSame($this->tokenValue, $requestResult);
     }
 
-    /**
-     * @test
-     * @dataProvider isLiveProvider
-     */
+    /** @test */
     public function it_will_return_null_if_response_invalid()
     {
         $mockedConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();

@@ -13,7 +13,6 @@ namespace BrokeYourBike\AccessBank\Interfaces;
  */
 interface ConfigInterface
 {
-    public function isLive(): bool;
     public function getUrl(): string;
     public function getAuthUrl(): string;
     public function getAppId(): string;
