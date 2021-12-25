@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.2.0...v0.3.0) (2021-12-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* use native enums
+
+### Bug Fixes
+
+* use native enums ([d2ff150](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/d2ff1501231cf784928dd654e46e8210f06165b1))
+
 ## [0.2.0](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.1.0...v0.2.0) (2021-12-19)
 
 
