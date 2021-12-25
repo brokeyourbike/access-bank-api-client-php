@@ -1,6 +1,6 @@
 <?php
 
-// Copyright (C) 2021 Ivan Stasiuk <brokeyourbike@gmail.com>.
+// Copyright (C) 2021 Ivan Stasiuk <ivan@stasi.uk>.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
@@ -21,7 +21,7 @@ use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Interfaces\BankTransactionInterface;
 
 /**
- * @author Ivan Stasiuk <brokeyourbike@gmail.com>
+ * @author Ivan Stasiuk <ivan@stasi.uk>
  */
 class Client implements HttpClientInterface
 {
@@ -92,7 +92,7 @@ class Client implements HttpClientInterface
         ];
 
         return $this->httpClient->request(
-            (string) HttpMethodEnum::POST(),
+            HttpMethodEnum::POST->value,
             $this->config->getAuthUrl(),
             $options
         );
@@ -100,7 +100,7 @@ class Client implements HttpClientInterface
 
     public function fetchAccountBalanceRaw(string $auditId, string $accountNumber): ResponseInterface
     {
-        return $this->performRequest(HttpMethodEnum::POST(), 'getAccountBalance', [
+        return $this->performRequest(HttpMethodEnum::POST, 'getAccountBalance', [
             'accountNumber' => $accountNumber,
             'auditId' => $auditId,
             'appId' => $this->config->getAppId(),
@@ -109,7 +109,7 @@ class Client implements HttpClientInterface
 
     public function fetchDomesticBankAccountNameRaw(string $auditId, string $accountNumber): ResponseInterface
     {
-        return $this->performRequest(HttpMethodEnum::POST(), 'getBankAccountName', [
+        return $this->performRequest(HttpMethodEnum::POST, 'getBankAccountName', [
             'accountNumber' => $accountNumber,
             'auditId' => $auditId,
             'appId' => $this->config->getAppId(),
@@ -118,7 +118,7 @@ class Client implements HttpClientInterface
 
     public function fetchDomesticTransactionStatusRaw(string $auditId, string $reference): ResponseInterface
     {
-        return $this->performRequest(HttpMethodEnum::POST(), 'getBankFTStatus', [
+        return $this->performRequest(HttpMethodEnum::POST, 'getBankFTStatus', [
             'paymentAuditId' => $reference,
             'auditId' => $auditId,
             'appId' => $this->config->getAppId(),
@@ -131,7 +131,7 @@ class Client implements HttpClientInterface
             $this->setSourceModel($bankTransaction);
         }
 
-        return $this->performRequest(HttpMethodEnum::POST(), 'bankAccountFT', [
+        return $this->performRequest(HttpMethodEnum::POST, 'bankAccountFT', [
             'debitAccount' => $bankTransaction->getDebitAccount(),
             'beneficiaryAccount' => $bankTransaction->getRecipientAccount(),
             'beneficiaryName' => $bankTransaction->getRecipientName(),
@@ -149,7 +149,7 @@ class Client implements HttpClientInterface
             $this->setSourceModel($bankTransaction);
         }
 
-        return $this->performRequest(HttpMethodEnum::POST(), 'USDOtherBankFT', [
+        return $this->performRequest(HttpMethodEnum::POST, 'USDOtherBankFT', [
             'AuditId' => $bankTransaction->getReference(),
             'AppId' => $this->config->getAppId(),
             'DebitAccountNumber' => $bankTransaction->getDebitAccount(),
@@ -184,6 +184,6 @@ class Client implements HttpClientInterface
         }
 
         $uri = (string) $this->resolveUriFor($this->config->getUrl(), $uri);
-        return $this->httpClient->request((string) $method, $uri, $options);
+        return $this->httpClient->request($method->value, $uri, $options);
     }
 }

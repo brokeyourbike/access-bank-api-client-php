@@ -20,6 +20,9 @@ composer require brokeyourbike/access-bank-api-client
 
 ```php
 use BrokeYourBike\AccessBank\Client;
+
+$apiClient = new Client($config, $httpClient, $psrCache);
+$apiClient->fetchAuthTokenRaw();
 ```
 
 ## License
