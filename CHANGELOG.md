@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.1](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.3.0...v0.3.1) (2022-01-02)
+
+
+### Bug Fixes
+
+* remove baseline ([0f33a9a](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/0f33a9a1ffd29e4ef35ebbd2c68a96f22586f6d5))
+
 ## [0.3.0](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.2.0...v0.3.0) (2021-12-25)
 
 
