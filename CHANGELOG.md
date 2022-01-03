@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.3.1...v0.4.0) (2022-01-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* add responses
+
+### Features
+
+* add responses ([10026bb](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/10026bb09328d408cd19734abdce1c6537355369))
+
 ### [0.3.1](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.3.0...v0.3.1) (2022-01-02)
 
 
