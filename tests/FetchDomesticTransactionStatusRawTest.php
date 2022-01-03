@@ -10,6 +10,7 @@ namespace BrokeYourBike\AccessBank\Tests;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface;
+use BrokeYourBike\AccessBank\Models\TransactionResponse;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Client;
 
@@ -36,13 +37,10 @@ class FetchDomesticTransactionStatusRawTest extends TestCase
         $mockedResponse->method('getStatusCode')->willReturn(200);
         $mockedResponse->method('getBody')
             ->willReturn('{
-                "accountNumber": "123456789",
-                "accountCurrency": "USD",
-                "clearedBalance": 1000000000.00,
-                "unclearedBalance": 1000000000.00,
-                "errorCode": 0,
-                "message": "Success - Approved or successfully processed",
-                "success": true
+                "payment": null,
+                "errorCode": 12,
+                "message": "Failed - No record found",
+                "success": false
             }');
 
         /** @var \Mockery\MockInterface $mockedClient */
@@ -51,7 +49,6 @@ class FetchDomesticTransactionStatusRawTest extends TestCase
             'POST',
             'https://api.example/getBankFTStatus',
             [
-                \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
                 \GuzzleHttp\RequestOptions::HEADERS => [
                     'Accept' => 'application/json',
                     'Authorization' => "Bearer {$this->clientSecret}",
@@ -78,6 +75,6 @@ class FetchDomesticTransactionStatusRawTest extends TestCase
 
         $requestResult = $api->fetchDomesticTransactionStatusRaw($this->auditId, '123456789');
 
-        $this->assertInstanceOf(ResponseInterface::class, $requestResult);
+        $this->assertInstanceOf(TransactionResponse::class, $requestResult);
     }
 }

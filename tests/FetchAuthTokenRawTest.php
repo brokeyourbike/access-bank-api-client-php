@@ -10,6 +10,7 @@ namespace BrokeYourBike\AccessBank\Tests;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface;
+use BrokeYourBike\AccessBank\Models\FetchAuthTokenResponse;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Client;
 
@@ -46,7 +47,6 @@ class FetchAuthTokenRawTest extends TestCase
             'POST',
             'https://auth.example/',
             [
-                \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
                 \GuzzleHttp\RequestOptions::HEADERS => [
                     'Accept' => 'application/json',
                 ],
@@ -69,6 +69,6 @@ class FetchAuthTokenRawTest extends TestCase
         $api = new Client($mockedConfig, $mockedClient, $mockedCache);
         $requestResult = $api->fetchAuthTokenRaw();
 
-        $this->assertInstanceOf(ResponseInterface::class, $requestResult);
+        $this->assertInstanceOf(FetchAuthTokenResponse::class, $requestResult);
     }
 }

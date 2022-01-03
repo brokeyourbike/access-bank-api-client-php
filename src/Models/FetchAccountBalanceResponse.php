@@ -6,13 +6,18 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this file,
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
-namespace BrokeYourBike\AccessBank\Tests;
+namespace BrokeYourBike\AccessBank\Models;
 
-use BrokeYourBike\HasSourceModel\SourceModelInterface;
-use BrokeYourBike\AccessBank\Interfaces\BankTransactionInterface;
+use BrokeYourBike\DataTransferObject\JsonResponse;
 
 /**
  * @author Ivan Stasiuk <ivan@stasi.uk>
  */
-abstract class SourceBankTransactionFixture implements BankTransactionInterface, SourceModelInterface
-{}
+class FetchAccountBalanceResponse extends JsonResponse
+{
+    public bool $success;
+    public string $errorCode;
+    public string $message;
+    public ?string $accountNumber;
+    public ?string $accountCurrency;
+}

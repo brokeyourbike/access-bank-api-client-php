@@ -17,6 +17,10 @@ use BrokeYourBike\HttpClient\HttpClientTrait;
 use BrokeYourBike\HttpClient\HttpClientInterface;
 use BrokeYourBike\HasSourceModel\SourceModelInterface;
 use BrokeYourBike\HasSourceModel\HasSourceModelTrait;
+use BrokeYourBike\AccessBank\Models\TransactionResponse;
+use BrokeYourBike\AccessBank\Models\FetchBankAccountNameResponse;
+use BrokeYourBike\AccessBank\Models\FetchAuthTokenResponse;
+use BrokeYourBike\AccessBank\Models\FetchAccountBalanceResponse;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Interfaces\BankTransactionInterface;
 
@@ -40,12 +44,22 @@ class Client implements HttpClientInterface
         $this->cache = $cache;
     }
 
+    public function getConfig(): ConfigInterface
+    {
+        return $this->config;
+    }
+
+    public function getCache(): CacheInterface
+    {
+        return $this->cache;
+    }
+
     public function authTokenCacheKey(): string
     {
         return get_class($this) . ':authToken:';
     }
 
-    public function getAuthToken(): ?string
+    public function getAuthToken(): string
     {
         if ($this->cache->has($this->authTokenCacheKey())) {
             $cachedToken = $this->cache->get($this->authTokenCacheKey());
@@ -55,31 +69,19 @@ class Client implements HttpClientInterface
         }
 
         $response = $this->fetchAuthTokenRaw();
-        $responseJson = \json_decode((string) $response->getBody(), true);
 
-        if (
-            is_array($responseJson) &&
-            isset($responseJson['access_token']) &&
-            is_string($responseJson['access_token']) &&
-            isset($responseJson['expires_in']) &&
-            is_numeric($responseJson['expires_in'])
-        ) {
-            $this->cache->set(
-                $this->authTokenCacheKey(),
-                $responseJson['access_token'],
-                (int) $responseJson['expires_in'] - $this->ttlMarginInSeconds
-            );
+        $this->cache->set(
+            $this->authTokenCacheKey(),
+            $response->accessToken,
+            (int) $response->expiresIn - $this->ttlMarginInSeconds
+        );
 
-            return $responseJson['access_token'];
-        }
-
-        return null;
+        return $response->accessToken;
     }
 
-    public function fetchAuthTokenRaw(): ResponseInterface
+    public function fetchAuthTokenRaw(): FetchAuthTokenResponse
     {
         $options = [
-            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
             \GuzzleHttp\RequestOptions::HEADERS => [
                 'Accept' => 'application/json',
             ],
@@ -91,47 +93,55 @@ class Client implements HttpClientInterface
             ],
         ];
 
-        return $this->httpClient->request(
+        $response = $this->httpClient->request(
             HttpMethodEnum::POST->value,
             $this->config->getAuthUrl(),
             $options
         );
+
+        return new FetchAuthTokenResponse($response);
     }
 
-    public function fetchAccountBalanceRaw(string $auditId, string $accountNumber): ResponseInterface
+    public function fetchAccountBalanceRaw(string $auditId, string $accountNumber): FetchAccountBalanceResponse
     {
-        return $this->performRequest(HttpMethodEnum::POST, 'getAccountBalance', [
+        $response = $this->performRequest(HttpMethodEnum::POST, 'getAccountBalance', [
             'accountNumber' => $accountNumber,
             'auditId' => $auditId,
             'appId' => $this->config->getAppId(),
         ]);
+
+        return new FetchAccountBalanceResponse($response);
     }
 
-    public function fetchDomesticBankAccountNameRaw(string $auditId, string $accountNumber): ResponseInterface
+    public function fetchDomesticBankAccountNameRaw(string $auditId, string $accountNumber): FetchBankAccountNameResponse
     {
-        return $this->performRequest(HttpMethodEnum::POST, 'getBankAccountName', [
+        $response = $this->performRequest(HttpMethodEnum::POST, 'getBankAccountName', [
             'accountNumber' => $accountNumber,
             'auditId' => $auditId,
             'appId' => $this->config->getAppId(),
         ]);
+
+        return new FetchBankAccountNameResponse($response);
     }
 
-    public function fetchDomesticTransactionStatusRaw(string $auditId, string $reference): ResponseInterface
+    public function fetchDomesticTransactionStatusRaw(string $auditId, string $reference): TransactionResponse
     {
-        return $this->performRequest(HttpMethodEnum::POST, 'getBankFTStatus', [
+        $response = $this->performRequest(HttpMethodEnum::POST, 'getBankFTStatus', [
             'paymentAuditId' => $reference,
             'auditId' => $auditId,
             'appId' => $this->config->getAppId(),
         ]);
+
+        return new TransactionResponse($response);
     }
 
-    public function sendDomesticTransaction(BankTransactionInterface $bankTransaction): ResponseInterface
+    public function sendDomesticTransaction(BankTransactionInterface $bankTransaction): TransactionResponse
     {
         if ($bankTransaction instanceof SourceModelInterface) {
             $this->setSourceModel($bankTransaction);
         }
 
-        return $this->performRequest(HttpMethodEnum::POST, 'bankAccountFT', [
+        $response = $this->performRequest(HttpMethodEnum::POST, 'bankAccountFT', [
             'debitAccount' => $bankTransaction->getDebitAccount(),
             'beneficiaryAccount' => $bankTransaction->getRecipientAccount(),
             'beneficiaryName' => $bankTransaction->getRecipientName(),
@@ -141,6 +151,8 @@ class Client implements HttpClientInterface
             'auditId' => $bankTransaction->getReference(),
             'appId' => $this->config->getAppId(),
         ]);
+
+        return new TransactionResponse($response);
     }
 
     public function sendOtherBankTransaction(BankTransactionInterface $bankTransaction): ResponseInterface
@@ -170,10 +182,9 @@ class Client implements HttpClientInterface
     private function performRequest(HttpMethodEnum $method, string $uri, array $data): ResponseInterface
     {
         $options = [
-            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
             \GuzzleHttp\RequestOptions::HEADERS => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . (string) $this->getAuthToken(),
+                'Authorization' => "Bearer {$this->getAuthToken()}",
                 'Ocp-Apim-Subscription-Key' => $this->config->getSubscriptionKey(),
             ],
             \GuzzleHttp\RequestOptions::JSON => $data,

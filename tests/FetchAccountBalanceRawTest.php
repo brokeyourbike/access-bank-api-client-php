@@ -10,6 +10,7 @@ namespace BrokeYourBike\AccessBank\Tests;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface;
+use BrokeYourBike\AccessBank\Models\FetchAccountBalanceResponse;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Client;
 
@@ -51,7 +52,6 @@ class FetchAccountBalanceRawTest extends TestCase
             'POST',
             'https://api.example/getAccountBalance',
             [
-                \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
                 \GuzzleHttp\RequestOptions::HEADERS => [
                     'Accept' => 'application/json',
                     'Authorization' => "Bearer {$this->clientSecret}",
@@ -78,6 +78,6 @@ class FetchAccountBalanceRawTest extends TestCase
 
         $requestResult = $api->fetchAccountBalanceRaw($this->auditId, '123456789');
 
-        $this->assertInstanceOf(ResponseInterface::class, $requestResult);
+        $this->assertInstanceOf(FetchAccountBalanceResponse::class, $requestResult);
     }
 }

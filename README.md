@@ -20,6 +20,11 @@ composer require brokeyourbike/access-bank-api-client
 
 ```php
 use BrokeYourBike\AccessBank\Client;
+use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
+
+assert($config instanceof ConfigInterface);
+assert($httpClient instanceof \GuzzleHttp\ClientInterface);
+assert($psrCache instanceof \Psr\SimpleCache\CacheInterface);
 
 $apiClient = new Client($config, $httpClient, $psrCache);
 $apiClient->fetchAuthTokenRaw();

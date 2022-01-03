@@ -10,6 +10,7 @@ namespace BrokeYourBike\AccessBank\Tests;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface;
+use BrokeYourBike\AccessBank\Models\TransactionResponse;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Interfaces\BankTransactionInterface;
 use BrokeYourBike\AccessBank\Client;
@@ -55,7 +56,6 @@ class SendDomesticTransactionTest extends TestCase
             'POST',
             'https://api.example/bankAccountFT',
             [
-                \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
                 \GuzzleHttp\RequestOptions::HEADERS => [
                     'Accept' => 'application/json',
                     'Authorization' => "Bearer {$this->clientSecret}",
@@ -87,63 +87,8 @@ class SendDomesticTransactionTest extends TestCase
 
         $requestResult = $api->sendDomesticTransaction($transaction);
 
-        $this->assertInstanceOf(ResponseInterface::class, $requestResult);
-    }
-
-    /** @test */
-    public function it_will_pass_source_model_as_option(): void
-    {
-        /** @var SourceBankTransactionFixture $transaction */
-        $transaction = $this->getMockBuilder(SourceBankTransactionFixture::class)->getMock();
-
-        /** @var SourceBankTransactionFixture $transaction */
-        $this->assertInstanceOf(SourceBankTransactionFixture::class, $transaction);
-
-        $mockedConfig = $this->getMockBuilder(ConfigInterface::class)->getMock();
-        $mockedConfig->method('getUrl')->willReturn('https://api.example/');
-        $mockedConfig->method('getAppId')->willReturn($this->appId);
-        $mockedConfig->method('getClientSecret')->willReturn($this->clientSecret);
-        $mockedConfig->method('getSubscriptionKey')->willReturn($this->subscriptionKey);
-
-        /** @var \Mockery\MockInterface $mockedClient */
-        $mockedClient = \Mockery::mock(\GuzzleHttp\Client::class);
-        $mockedClient->shouldReceive('request')->withArgs([
-            'POST',
-            'https://api.example/bankAccountFT',
-            [
-                \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
-                \GuzzleHttp\RequestOptions::HEADERS => [
-                    'Accept' => 'application/json',
-                    'Authorization' => "Bearer {$this->clientSecret}",
-                    'Ocp-Apim-Subscription-Key' => $this->subscriptionKey,
-                ],
-                \GuzzleHttp\RequestOptions::JSON => [
-                    'debitAccount' => $transaction->getDebitAccount(),
-                    'beneficiaryAccount' => $transaction->getRecipientAccount(),
-                    'beneficiaryName' => $transaction->getRecipientName(),
-                    'amount' => $transaction->getAmount(),
-                    'currency' => $transaction->getCurrencyCode(),
-                    'narration' => $transaction->getDescription(),
-                    'auditId' => $transaction->getReference(),
-                    'appId' => $this->appId,
-                ],
-                \BrokeYourBike\HasSourceModel\Enums\RequestOptions::SOURCE_MODEL => $transaction,
-            ],
-        ])->once();
-
-        $mockedCache = $this->getMockBuilder(CacheInterface::class)->getMock();
-        $mockedCache->method('has')->willReturn(true);
-        $mockedCache->method('get')->willReturn($this->clientSecret);
-
-        /**
-         * @var ConfigInterface $mockedConfig
-         * @var \GuzzleHttp\Client $mockedClient
-         * @var CacheInterface $mockedCache
-         * */
-        $api = new Client($mockedConfig, $mockedClient, $mockedCache);
-
-        $requestResult = $api->sendDomesticTransaction($transaction);
-
-        $this->assertInstanceOf(ResponseInterface::class, $requestResult);
+        $this->assertInstanceOf(TransactionResponse::class, $requestResult);
+        $this->assertSame('BANKAPI123456789', $requestResult->transactionId);
+        $this->assertSame('1', $requestResult->transactionStatus);
     }
 }
