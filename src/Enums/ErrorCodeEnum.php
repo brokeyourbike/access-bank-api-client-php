@@ -82,4 +82,9 @@ enum ErrorCodeEnum: string
      * Declined - Transaction not permitted. Confirm request or contact support.
      */
     case NOT_PERMITTED = '24';
+
+    /**
+     * An error occured while processing your request, Please try again.
+     */
+    case ERROR_WHILE_PROCESSIN_TRANSACTION = '38';
 }
