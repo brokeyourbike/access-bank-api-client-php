@@ -1,5 +1,17 @@
 # Changelog
 
+### [0.4.2](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.4.1...v0.4.2) (2022-02-04)
+
+
+### Bug Fixes
+
+* transaction can fail ([775a1e4](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/775a1e43523817f9f48a46fefb92386df637a173))
+
+
+### Miscellaneous Chores
+
+* arrange badges ([1b104ca](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/1b104caa86834346f342989d03fb8926ba3bb10f))
+
 ### [0.4.1](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.4.0...v0.4.1) (2022-01-11)
 
 
