@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.4.3](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.4.2...v0.4.3) (2023-05-14)
+
+
+### Miscellaneous Chores
+
+* badges ([1dc651c](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/1dc651c24a32b992311b9969064af5fc064fcc73))
+
 ### [0.4.2](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.4.1...v0.4.2) (2022-02-04)
 
 
