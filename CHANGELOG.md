@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.4.4](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.4.3...v0.4.4) (2023-05-20)
+
+
+### Miscellaneous Chores
+
+* button ([1d90be9](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/1d90be9ca4639ae4e1691fb40f0c453325d08ff0))
+
 ### [0.4.3](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.4.2...v0.4.3) (2023-05-14)
 
 
