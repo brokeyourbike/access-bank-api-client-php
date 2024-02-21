@@ -20,5 +20,7 @@ interface BankTransactionInterface
     public function getDebitAccount(): string;
     public function getRecipientAccount(): string;
     public function getRecipientName(): string;
+    public function getSenderCountry(): string;
+    public function getSenderName(): string;
     public function getDescription(): string;
 }

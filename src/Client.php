@@ -18,9 +18,7 @@ use BrokeYourBike\HttpClient\HttpClientInterface;
 use BrokeYourBike\HasSourceModel\SourceModelInterface;
 use BrokeYourBike\HasSourceModel\HasSourceModelTrait;
 use BrokeYourBike\AccessBank\Models\TransactionResponse;
-use BrokeYourBike\AccessBank\Models\FetchBankAccountNameResponse;
 use BrokeYourBike\AccessBank\Models\FetchAuthTokenResponse;
-use BrokeYourBike\AccessBank\Models\FetchAccountBalanceResponse;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Interfaces\BankTransactionInterface;
 
@@ -35,7 +33,6 @@ class Client implements HttpClientInterface
 
     private ConfigInterface $config;
     private CacheInterface $cache;
-    private int $ttlMarginInSeconds = 60;
 
     public function __construct(ConfigInterface $config, ClientInterface $httpClient, CacheInterface $cache)
     {
@@ -73,7 +70,7 @@ class Client implements HttpClientInterface
         $this->cache->set(
             $this->authTokenCacheKey(),
             $response->accessToken,
-            (int) $response->expiresIn - $this->ttlMarginInSeconds
+            $response->expiresIn / 2
         );
 
         return $response->accessToken;
@@ -102,29 +99,7 @@ class Client implements HttpClientInterface
         return new FetchAuthTokenResponse($response);
     }
 
-    public function fetchAccountBalanceRaw(string $auditId, string $accountNumber): FetchAccountBalanceResponse
-    {
-        $response = $this->performRequest(HttpMethodEnum::POST, 'getAccountBalance', [
-            'accountNumber' => $accountNumber,
-            'auditId' => $auditId,
-            'appId' => $this->config->getAppId(),
-        ]);
-
-        return new FetchAccountBalanceResponse($response);
-    }
-
-    public function fetchDomesticBankAccountNameRaw(string $auditId, string $accountNumber): FetchBankAccountNameResponse
-    {
-        $response = $this->performRequest(HttpMethodEnum::POST, 'getBankAccountName', [
-            'accountNumber' => $accountNumber,
-            'auditId' => $auditId,
-            'appId' => $this->config->getAppId(),
-        ]);
-
-        return new FetchBankAccountNameResponse($response);
-    }
-
-    public function fetchDomesticTransactionStatusRaw(string $auditId, string $reference): TransactionResponse
+    public function fetchDomesticTransactionStatus(string $auditId, string $reference): TransactionResponse
     {
         $response = $this->performRequest(HttpMethodEnum::POST, 'getBankFTStatus', [
             'paymentAuditId' => $reference,
@@ -142,35 +117,51 @@ class Client implements HttpClientInterface
         }
 
         $response = $this->performRequest(HttpMethodEnum::POST, 'bankAccountFT', [
+            'auditId' => $bankTransaction->getReference(),
+            'appId' => $this->config->getAppId(),
             'debitAccount' => $bankTransaction->getDebitAccount(),
             'beneficiaryAccount' => $bankTransaction->getRecipientAccount(),
             'beneficiaryName' => $bankTransaction->getRecipientName(),
+            'senderCountry' => $bankTransaction->getSenderCountry(),
+            'senderName' => $bankTransaction->getSenderName(),
             'amount' => $bankTransaction->getAmount(),
             'currency' => $bankTransaction->getCurrencyCode(),
             'narration' => $bankTransaction->getDescription(),
-            'auditId' => $bankTransaction->getReference(),
+            'newCustomer' => false,
+        ]);
+
+        return new TransactionResponse($response);
+    }
+
+    public function fetchOtheBankTransactionStatus(string $auditId, string $reference): TransactionResponse
+    {
+        $response = $this->performRequest(HttpMethodEnum::POST, 'getOtherBankFTStatus', [
+            'paymentAuditId' => $reference,
+            'auditId' => $auditId,
             'appId' => $this->config->getAppId(),
         ]);
 
         return new TransactionResponse($response);
     }
 
-    public function sendOtherBankTransaction(BankTransactionInterface $bankTransaction): ResponseInterface
+    public function sendOtherBankTransaction(BankTransactionInterface $bankTransaction): TransactionResponse
     {
         if ($bankTransaction instanceof SourceModelInterface) {
             $this->setSourceModel($bankTransaction);
         }
 
-        return $this->performRequest(HttpMethodEnum::POST, 'USDOtherBankFT', [
-            'AuditId' => $bankTransaction->getReference(),
-            'AppId' => $this->config->getAppId(),
-            'DebitAccountNumber' => $bankTransaction->getDebitAccount(),
-            'BeneficiaryAccount' => $bankTransaction->getRecipientAccount(),
-            'BeneficiaryName' => $bankTransaction->getRecipientName(),
-            'Amount' => $bankTransaction->getAmount(),
-            'Bank' => $bankTransaction->getBankCode(),
-            'Narration' => $bankTransaction->getDescription(),
+        $response = $this->performRequest(HttpMethodEnum::POST, 'otherBankAccountFT', [
+            'auditId' => $bankTransaction->getReference(),
+            'appId' => $this->config->getAppId(),
+            'debitAccountNumber' => $bankTransaction->getDebitAccount(),
+            'beneficiaryAccount' => $bankTransaction->getRecipientAccount(),
+            'beneficiaryName' => $bankTransaction->getRecipientName(),
+            'amount' => $bankTransaction->getAmount(),
+            'bank' => $bankTransaction->getBankCode(),
+            'narration' => $bankTransaction->getDescription(),
         ]);
+
+        return new TransactionResponse($response);
     }
 
     /**

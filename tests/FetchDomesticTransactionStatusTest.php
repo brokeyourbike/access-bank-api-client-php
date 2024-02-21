@@ -10,14 +10,14 @@ namespace BrokeYourBike\AccessBank\Tests;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\Http\Message\ResponseInterface;
-use BrokeYourBike\AccessBank\Models\FetchBankAccountNameResponse;
+use BrokeYourBike\AccessBank\Models\TransactionResponse;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 use BrokeYourBike\AccessBank\Client;
 
 /**
  * @author Ivan Stasiuk <ivan@stasi.uk>
  */
-class FetchDomesticBankAccountNameRawTest extends TestCase
+class FetchDomesticTransactionStatusTest extends TestCase
 {
     private string $appId = 'app-id';
     private string $clientSecret = 'secure-token';
@@ -37,19 +37,17 @@ class FetchDomesticBankAccountNameRawTest extends TestCase
         $mockedResponse->method('getStatusCode')->willReturn(200);
         $mockedResponse->method('getBody')
             ->willReturn('{
-                "accountNumber": "123456789",
-                "accountName": "JOHN DOE",
-                "accountCurrency": "NGN",
-                "errorCode": 0,
-                "message": "Success - Approved or successfully processed",
-                "success": true
+                "payment": null,
+                "errorCode": 12,
+                "message": "Failed - No record found",
+                "success": false
             }');
 
         /** @var \Mockery\MockInterface $mockedClient */
         $mockedClient = \Mockery::mock(\GuzzleHttp\Client::class);
         $mockedClient->shouldReceive('request')->withArgs([
             'POST',
-            'https://api.example/getBankAccountName',
+            'https://api.example/getBankFTStatus',
             [
                 \GuzzleHttp\RequestOptions::HEADERS => [
                     'Accept' => 'application/json',
@@ -57,7 +55,7 @@ class FetchDomesticBankAccountNameRawTest extends TestCase
                     'Ocp-Apim-Subscription-Key' => $this->subscriptionKey,
                 ],
                 \GuzzleHttp\RequestOptions::JSON => [
-                    'accountNumber' => '123456789',
+                    'paymentAuditId' => '123456789',
                     'auditId' => $this->auditId,
                     'appId' => $this->appId,
                 ],
@@ -75,8 +73,8 @@ class FetchDomesticBankAccountNameRawTest extends TestCase
          * */
         $api = new Client($mockedConfig, $mockedClient, $mockedCache);
 
-        $requestResult = $api->fetchDomesticBankAccountNameRaw($this->auditId, '123456789');
+        $requestResult = $api->fetchDomesticTransactionStatus($this->auditId, '123456789');
 
-        $this->assertInstanceOf(FetchBankAccountNameResponse::class, $requestResult);
+        $this->assertInstanceOf(TransactionResponse::class, $requestResult);
     }
 }

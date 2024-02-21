@@ -18,7 +18,7 @@ use BrokeYourBike\AccessBank\Client;
 /**
  * @author Ivan Stasiuk <ivan@stasi.uk>
  */
-class SendDomesticTransactionTest extends TestCase
+class SendOtherBankTransactionTest extends TestCase
 {
     private string $appId = 'app-id';
     private string $clientSecret = 'secure-token';
@@ -54,7 +54,7 @@ class SendDomesticTransactionTest extends TestCase
         $mockedClient = \Mockery::mock(\GuzzleHttp\Client::class);
         $mockedClient->shouldReceive('request')->withArgs([
             'POST',
-            'https://api.example/bankAccountFT',
+            'https://api.example/otherBankAccountFT',
             [
                 \GuzzleHttp\RequestOptions::HEADERS => [
                     'Accept' => 'application/json',
@@ -64,15 +64,12 @@ class SendDomesticTransactionTest extends TestCase
                 \GuzzleHttp\RequestOptions::JSON => [
                     'auditId' => $transaction->getReference(),
                     'appId' => $this->appId,
-                    'debitAccount' => $transaction->getDebitAccount(),
+                    'debitAccountNumber' => $transaction->getDebitAccount(),
                     'beneficiaryAccount' => $transaction->getRecipientAccount(),
                     'beneficiaryName' => $transaction->getRecipientName(),
-                    'senderCountry' => $transaction->getSenderCountry(),
-                    'senderName' => $transaction->getSenderName(),
                     'amount' => $transaction->getAmount(),
-                    'currency' => $transaction->getCurrencyCode(),
+                    'bank' => $transaction->getBankCode(),
                     'narration' => $transaction->getDescription(),
-                    'newCustomer' => false,
                 ],
             ],
         ])->once()->andReturn($mockedResponse);
@@ -88,7 +85,7 @@ class SendDomesticTransactionTest extends TestCase
          * */
         $api = new Client($mockedConfig, $mockedClient, $mockedCache);
 
-        $requestResult = $api->sendDomesticTransaction($transaction);
+        $requestResult = $api->sendOtherBankTransaction($transaction);
 
         $this->assertInstanceOf(TransactionResponse::class, $requestResult);
         $this->assertSame('BANKAPI123456789', $requestResult->transactionId);
@@ -133,7 +130,7 @@ class SendDomesticTransactionTest extends TestCase
          * */
         $api = new Client($mockedConfig, $mockedClient, $mockedCache);
 
-        $requestResult = $api->sendDomesticTransaction($transaction);
+        $requestResult = $api->sendOtherBankTransaction($transaction);
 
         $this->assertInstanceOf(TransactionResponse::class, $requestResult);
         $this->assertSame('Internal server error', $requestResult->message);
