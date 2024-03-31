@@ -16,7 +16,7 @@ use BrokeYourBike\DataTransferObject\JsonResponse;
  */
 class TransactionResponse extends JsonResponse
 {
-    public string $message;
+    public ?string $message;
     public ?bool $success;
     public ?string $errorCode;
     public ?string $statusCode;
