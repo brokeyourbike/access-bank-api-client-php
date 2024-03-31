@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.5.1](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.5.0...v0.5.1) (2024-03-31)
+
+
+### Bug Fixes
+
+* meessage can be null ([d65592e](https://www.github.com/brokeyourbike/access-bank-api-client-php/commit/d65592ecd15fe014badd5f02a9fbcf464d6ca770))
+
 ## [0.5.0](https://www.github.com/brokeyourbike/access-bank-api-client-php/compare/v0.4.3...v0.5.0) (2024-02-21)
 
 
